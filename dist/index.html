@@ -97,6 +97,18 @@ $('#customType').onchange=syncCustomFields;$('#cancelModal').onclick=()=>{$('#mo
 $('#deleteCustom').onclick=()=>{let item=custom.find(x=>x.id===editingCustom);if(!item||!confirm(`Delete custom ${item.type==='character'?'character':'gear'} “${item.name}”? It will also be removed from your current board and saved teams.`))return;let id=item.id;custom=custom.filter(x=>x.id!==id);localStorage.setItem('iv-custom',JSON.stringify(custom));board=board.map(slot=>({char:slot.char===id?null:slot.char,gear:slot.gear.map(g=>g===id?null:g)}));let teams=saves().map(team=>({...team,board:team.board.map(slot=>({char:slot.char===id?null:slot.char,gear:slot.gear.map(g=>g===id?null:g)}))}));localStorage.setItem('iv-teams',JSON.stringify(teams));if(selected===id)selected=null;editingCustom=null;$('#customType').disabled=false;$('#modal').classList.remove('open');renderBoard();renderFilters();renderLibrary();renderSaves();renderQueue();toast('Custom card deleted')};
 $('#addCustom').onclick=()=>{let name=$('#customName').value.trim(),type=$('#customType').value,variant=$('#customVariant').value.trim();if(!name){toast('Add a name first');return}if(editingCustom){let i=custom.findIndex(x=>x.id===editingCustom);if(i>=0)custom[i]={...custom[i],name,variant:type==='characters'?(variant||'Custom'):''};}else custom.push({id:'x'+Date.now(),name,variant:type==='characters'?(variant||'Custom'):'',tag:'Custom',tone:type==='characters'?'#4d5964':'#6d5227',type:type==='characters'?'character':'gear'});localStorage.setItem('iv-custom',JSON.stringify(custom));$('#customName').value='';$('#customVariant').value='';$('#customType').disabled=false;$('#modal').classList.remove('open');let edited=!!editingCustom;editingCustom=null;tab=type;filter='All';$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===tab));renderFilters();renderLibrary();renderBoard();renderQueue();toast(edited?'Custom card updated':'Custom card added')};
 restoreDraft();renderBoard();renderFilters();renderLibrary();renderSaves();renderQueue();
+if('serviceWorker' in navigator){
+  window.addEventListener('load',async()=>{
+    try{
+      await navigator.serviceWorker.register('./sw.js');
+      await navigator.serviceWorker.ready;
+      if(!localStorage.getItem('iv-pictures-cached-v1')){
+        localStorage.setItem('iv-pictures-cached-v1','1');
+        toast('Pictures saved on this device');
+      }
+    }catch(error){console.warn('Offline picture cache unavailable',error)}
+  });
+}
 </script>
 </body>
 </html>
