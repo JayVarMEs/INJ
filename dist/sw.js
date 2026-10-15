@@ -1,4 +1,4 @@
-const CACHE_NAME = 'injustice-team-vault-pictures-v1';
+const CACHE_NAME = 'injustice-team-vault-pictures-v2';
 
 const CORE_FILES = [
   './',
@@ -9,7 +9,8 @@ const CORE_FILES = [
 
 const PICTURE_FILES = [
   ...Array.from({ length: 144 }, (_, i) => `./assets/characters/c${i}.webp`),
-  ...Array.from({ length: 68 }, (_, i) => `./assets/cards/${i < 36 ? 'c' : 'g'}${i < 36 ? i : i - 36}.webp`)
+  ...Array.from({ length: 68 }, (_, i) => `./assets/cards/${i < 36 ? 'c' : 'g'}${i < 36 ? i : i - 36}.webp`),
+  './assets/cards/g32.png'
 ];
 
 async function cacheFiles(files) {
